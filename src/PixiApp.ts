@@ -21,17 +21,28 @@ export const InitializePixi = () => {
       y: app.renderer.height / 2,
     });
 
-    // Rotate around the center
-    //car.anchor.x = 0.5;
-    //car.anchor.y = 0.5;
-
     // Add the car to the scene we are building.
     app.stage.addChild(car);
     MatterManager.addSprite(car);
 
     // Listen for frame updates
     app.ticker.add((delta) => {
+      car.applyRotation();
       car.updatePos();
     });
+
+    //managing inputs
+    window.addEventListener("mousedown", (e) => car.applyForce());
+    window.onkeydown = (e: KeyboardEvent) => {
+      if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+      e.preventDefault();
+      let direction: keyof typeof car.rotationInputs =
+        e.key == "ArrowLeft" ? "right" : "left";
+      car.rotationInputs[direction] = true;
+    };
+    window.onkeyup = (e: KeyboardEvent) => {
+      if (e.key == "ArrowLeft") car.rotationInputs.right = false;
+      else if (e.key == "ArrowRight") car.rotationInputs.left = false;
+    };
   });
 };

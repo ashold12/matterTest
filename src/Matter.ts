@@ -1,4 +1,4 @@
-import Matter, { Bodies, Engine, Render, World } from "matter-js";
+import Matter, { Bodies, Engine, Events, Render, World, Body } from "matter-js";
 import type { MatterSprite } from "./SpriteManager";
 import { app } from "./PixiApp";
 
@@ -16,10 +16,11 @@ export abstract class MatterManager {
   private static timer = new Timer();
   private static engine = Engine.create();
   private static render: Matter.Render;
-  private static borderSpace = 10; //border outside bounds of app view
+  private static borderSpace = 50; //border outside bounds of app view
 
   public static start = () => {
     const { height, width } = app.renderer.view;
+    this.engine.gravity.y = 0; //disable gravity;
     this.engine.world.bounds = {
       min: { x: -this.borderSpace, y: this.borderSpace },
       max: {
@@ -59,6 +60,23 @@ export abstract class MatterManager {
     );
 
     World.add(this.engine.world, [/*left, right */ top, bottom]);
+
+    Events.on(this.engine, "beforeUpdate", () => {
+      const maxSpeed = 12;
+      this.engine.world.bodies.forEach((body) => {
+        if (body.velocity.x > maxSpeed) {
+          Body.setVelocity(body, { x: maxSpeed, y: body.velocity.y });
+        } else if (body.velocity.x < -maxSpeed) {
+          Body.setVelocity(body, { x: -maxSpeed, y: body.velocity.y });
+        }
+
+        if (body.velocity.y > maxSpeed) {
+          Body.setVelocity(body, { x: body.velocity.x, y: maxSpeed });
+        } else if (body.velocity.y < -maxSpeed) {
+          Body.setVelocity(body, { x: -body.velocity.x, y: -maxSpeed });
+        }
+      });
+    });
 
     setInterval(() => {
       const delta = this.timer.getDelta();
