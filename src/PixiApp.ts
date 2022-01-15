@@ -28,21 +28,36 @@ export const InitializePixi = () => {
     // Listen for frame updates
     app.ticker.add((delta) => {
       car.applyRotation();
+      car.applyForce();
       car.updatePos();
     });
 
     //managing inputs
-    window.addEventListener("mousedown", (e) => car.applyForce());
+    const keyCodes = {
+      space: " ",
+      right: "ArrowRight",
+      left: "ArrowLeft",
+    };
+
+    //window.addEventListener("mousedown", (e) => car.applyForce());
     window.onkeydown = (e: KeyboardEvent) => {
-      if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
+      if (!Object.values(keyCodes).includes(e.key)) return;
+      const { right, left, space } = keyCodes;
       e.preventDefault();
-      let direction: keyof typeof car.rotationInputs =
-        e.key == "ArrowLeft" ? "right" : "left";
-      car.rotationInputs[direction] = true;
+      if ([right, left].includes(e.key)) {
+        let direction: keyof typeof car.movementInputs.rotation =
+          e.key == "ArrowLeft" ? "right" : "left";
+        car.movementInputs.rotation[direction] = true;
+      } else {
+        car.movementInputs.forward = true;
+      }
     };
     window.onkeyup = (e: KeyboardEvent) => {
-      if (e.key == "ArrowLeft") car.rotationInputs.right = false;
-      else if (e.key == "ArrowRight") car.rotationInputs.left = false;
+      if (!Object.values(keyCodes).includes(e.key)) return;
+      if (e.key == keyCodes.left) car.movementInputs.rotation.right = false;
+      else if (e.key == keyCodes.right)
+        car.movementInputs.rotation.left = false;
+      else car.movementInputs.forward = false;
     };
   });
 };

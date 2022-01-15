@@ -27,24 +27,32 @@ export class MatterSprite extends PixiSprite {
     this.rigidBody = Bodies.rectangle(this.x, this.y, this.width, this.height);
   }
   rigidBody: Matter.Body;
+  readonly rotationMultiplier = 5;
+  readonly velocityMultipler = 5;
 
   //client input
-  rotationInputs: { right: boolean; left: boolean } = {
-    right: false,
-    left: false,
+  movementInputs = {
+    rotation: {
+      right: false,
+      left: false,
+    },
+    forward: false,
   };
 
   applyForce = () => {
+    if (!this.movementInputs.forward) {
+      Body.setVelocity(this.rigidBody, { x: 0, y: 0 });
+      return;
+    }
     const { angle } = this.rigidBody;
     Body.setVelocity(this.rigidBody, {
-      x: Math.cos(angle - Math.PI / 2),
-      y: Math.sin(angle - Math.PI / 2),
+      x: this.velocityMultipler * Math.cos(angle - Math.PI / 2),
+      y: this.velocityMultipler * Math.sin(angle - Math.PI / 2),
     });
   };
 
   applyRotation = () => {
-    const rotationSpeed = 3; //fixed value sensitivity
-    const { left, right } = this.rotationInputs;
+    const { left, right } = this.movementInputs.rotation;
     //disable angular velocity
     if (left == right) {
       Body.setAngularVelocity(this.rigidBody, 0);
@@ -53,9 +61,15 @@ export class MatterSprite extends PixiSprite {
     //set velocity if inputs
 
     if (left)
-      Body.setAngularVelocity(this.rigidBody, rotationSpeed * (Math.PI / 180));
+      Body.setAngularVelocity(
+        this.rigidBody,
+        this.rotationMultiplier * (Math.PI / 180)
+      );
     else
-      Body.setAngularVelocity(this.rigidBody, -rotationSpeed * (Math.PI / 180));
+      Body.setAngularVelocity(
+        this.rigidBody,
+        -this.rotationMultiplier * (Math.PI / 180)
+      );
   };
 
   /**
