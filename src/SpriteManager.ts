@@ -1,4 +1,4 @@
-import { Vector, Bodies, Body } from "matter-js";
+import Matter, { Vector, Bodies, Body } from "matter-js";
 import { Sprite as PixiSprite, Texture, Resource, Rectangle } from "pixi.js";
 import { app } from "./PixiApp";
 
@@ -28,7 +28,7 @@ export class MatterSprite extends PixiSprite {
   }
   rigidBody: Matter.Body;
   readonly rotationMultiplier = 5;
-  readonly velocityMultipler = 5;
+  readonly velocityMultipler = 7;
 
   //client input
   movementInputs = {
@@ -39,16 +39,26 @@ export class MatterSprite extends PixiSprite {
     forward: false,
   };
 
+  public getFacingAngle = () => this.rigidBody.angle - Math.PI / 2;
+
   applyForce = () => {
     if (!this.movementInputs.forward) {
-      Body.setVelocity(this.rigidBody, { x: 0, y: 0 });
+      //Body.setVelocity(this.rigidBody, { x: 0, y: 0 });
       return;
     }
-    const { angle } = this.rigidBody;
+    const { angle, position } = this.rigidBody;
     Body.setVelocity(this.rigidBody, {
-      x: this.velocityMultipler * Math.cos(angle - Math.PI / 2),
-      y: this.velocityMultipler * Math.sin(angle - Math.PI / 2),
+      x: this.velocityMultipler * Math.cos(this.getFacingAngle()),
+      y: this.velocityMultipler * Math.sin(this.getFacingAngle()),
     });
+    // Body.applyForce(
+    //   this.rigidBody,
+    //   { x: position.x, y: position.y },
+    //   {
+    //     x: 0.005 * Math.cos(angle - Math.PI / 2),
+    //     y: 0.005 * Math.sin(angle - Math.PI / 2),
+    //   }
+    // );
   };
 
   applyRotation = () => {
@@ -70,6 +80,13 @@ export class MatterSprite extends PixiSprite {
         this.rigidBody,
         -this.rotationMultiplier * (Math.PI / 180)
       );
+    if (
+      Vector.angle(this.rigidBody.position, this.rigidBody.velocity) !=
+      this.getFacingAngle()
+    ) {
+      const mag = Vector.magnitude(this.rigidBody.velocity);
+      Body.setVelocity(this.rigidBody, {x: mag * Math.cos(this.getFacingAngle()), y: mag * Math.sin(this.getFacingAngle())}
+    }
   };
 
   /**

@@ -27,8 +27,8 @@ export const InitializePixi = () => {
 
     // Listen for frame updates
     app.ticker.add((delta) => {
-      car.applyRotation();
       car.applyForce();
+      car.applyRotation();
       car.updatePos();
     });
 
