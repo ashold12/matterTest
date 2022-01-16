@@ -29,37 +29,43 @@ export abstract class MatterManager {
       },
     };
 
-    /*
     let left = Bodies.rectangle(
       -(this.borderSpace / 2),
       height / 2,
-      height + this.borderSpace * 2,
       this.borderSpace,
+      height,
       { isStatic: true }
     );
 
     let right = Bodies.rectangle(
-      this.borderSpace / 2 + width,
+      width + this.borderSpace / 2,
       height / 2,
-      height + this.borderSpace * 2,
       this.borderSpace,
+      height,
       { isStatic: true }
     );
-    */
-
-    let top = Bodies.rectangle(width / 2, height, width, this.borderSpace, {
-      isStatic: true,
-    });
 
     let bottom = Bodies.rectangle(
       width / 2,
-      this.borderSpace / 2,
+      height + this.borderSpace / 2, //adding moves it down the canvas
       width,
       this.borderSpace,
-      { isStatic: true }
+      {
+        isStatic: true,
+      }
     );
 
-    World.add(this.engine.world, [/*left, right */ top, bottom]);
+    let top = Bodies.rectangle(
+      width / 2,
+      -this.borderSpace / 2,
+      width,
+      this.borderSpace,
+      {
+        isStatic: true,
+      }
+    );
+
+    World.add(this.engine.world, [left, right, top, bottom]);
 
     Events.on(this.engine, "beforeUpdate", () => {
       const maxSpeed = 12;
