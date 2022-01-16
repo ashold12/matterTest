@@ -1,6 +1,8 @@
 import Matter, { Vector, Bodies, Body } from "matter-js";
 import { Sprite as PixiSprite, Texture, Resource, Rectangle } from "pixi.js";
 import { app } from "./PixiApp";
+import * as car_coordinates from '../public/blue_pixel_car_coordinates.json';
+import { scaleVertices } from "./utils/scaleVertices";
 
 export class MatterSprite extends PixiSprite {
   constructor(
@@ -24,7 +26,7 @@ export class MatterSprite extends PixiSprite {
     this.y = startPosition.y;
 
     app.stage.addChild(this);
-    this.rigidBody = Bodies.rectangle(this.x, this.y, this.width, this.height);
+    this.rigidBody = Bodies.fromVertices(this.x, this.y, scaleVertices({x: 2, y:4}, car_coordinates.blue_pixel_car.fixtures[0].vertices));
   }
   rigidBody: Matter.Body;
   readonly rotationMultiplier = 5;

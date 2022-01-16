@@ -1,0 +1,30 @@
+{
+	"generator_info": "Shape definitions generated with PhysicsEditor. Visit https://www.codeandweb.com/physicseditor",
+	"blue_pixel_car": {
+		"type": "fromPhysicsEditor",
+		"label": "blue_pixel_car",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0,
+		"friction": 0.1,
+		"frictionAir": 0.01,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "",
+				"isSensor": false,
+				"vertices": [
+					[ { "x":1, "y":6 }, { "x":1, "y":17 }, { "x":21, "y":17 }, { "x":21, "y":6 }, { "x":14, "y":0 }, { "x":8, "y":0 } ],
+					[ { "x":1, "y":17 }, { "x":0, "y":30 }, { "x":20, "y":30 }, { "x":21, "y":17 } ],
+					[ { "x":22, "y":30 }, { "x":21, "y":17 }, { "x":20, "y":30 } ],
+					[ { "x":2, "y":32 }, { "x":20, "y":32 }, { "x":20, "y":30 }, { "x":2, "y":30 } ]
+				]
+			}
+		]
+	}
+}
